@@ -1,6 +1,7 @@
 import tkinter
 from tkinter import *
-from tkinter import ttk
+from Class import Ticket
+# from tkinter import ttk
 
 
 def clear_window(windows):
@@ -18,7 +19,7 @@ window.config(bg="white", menu=menubar)
 
 def complain_window():
     clear_window(window)
-    complain_frame = Frame(window)
+    complain_frame = Frame(window).pack()
     data_frame = LabelFrame(complain_frame, text="Information")
     data_frame.pack(padx=10, pady=10)
 
@@ -46,3 +47,9 @@ def complain_window():
     content_label.grid(row=4, column=0, padx=10, pady=10)
     content_entry = Entry(data_frame)
     content_entry.grid(row=5, column=0, padx=10, pady=10)
+
+
+menubar.add_command(label="Complain", command=complain_window)
+window.mainloop()
+
+ticket1 = Ticket("1234", "20240027", "Adrian", "adriansuprapto2004@gmail.com", "this is a test", "open")

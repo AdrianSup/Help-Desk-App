@@ -10,7 +10,7 @@ class Ticket:
 
     # Ticket methods
     def submit(self):
-        pass
+            print(self.name, self.email, self.content, self.status, self.staff_id, self.ticket_id)
 
     def respond(self):
         pass
@@ -23,3 +23,4 @@ class Ticket:
 
     def pass_change(self):
         pass
+    
