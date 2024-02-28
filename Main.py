@@ -8,6 +8,11 @@ def clear_window(windows):
     for i in windows.winfo_children()[1:]:
         i.destroy()
 
+def submit(staff_id, name, email, content):
+    ticket1 = Ticket("1234", staff_id, name, email, content, "open")
+    ticket1.submit()
+
+
 
 # window construct
 window = tkinter.Tk()
@@ -47,6 +52,8 @@ def complain_window():
     content_label.grid(row=4, column=0, padx=10, pady=10)
     content_entry = Entry(data_frame)
     content_entry.grid(row=5, column=0, padx=10, pady=10)
+
+    submit_button = Button(complain_frame, text="Submit", command=lambda: submit(staff_id_entry.get(), name_entry.get(), email_entry.get(), content_entry.get())).pack()
 
 
 menubar.add_command(label="Complain", command=complain_window)
