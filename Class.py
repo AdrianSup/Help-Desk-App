@@ -1,16 +1,22 @@
+import tkinter
+
+ticket_list = []
 class Ticket:
     # Ticket basic information and constructor
-    def __init__(self, ticket_id, staff_id, name, email, content, status):
+    def __init__(self, ticket_id, staff_id, name, date, email, status, content):
         self.ticket_id = ticket_id
         self.staff_id = staff_id
         self.name = name
+        self.date = date
         self.email = email
         self.content = content
         self.status = status
 
     # Ticket methods
     def submit(self):
-            print(self.name, self.email, self.content, self.status, self.staff_id, self.ticket_id)
+        ticket_now = (self.ticket_id, self.staff_id, self.name, self.date, self.email, self.status, self.content)
+        ticket_list.append(ticket_now)
+        print((ticket_now, ticket_list))
 
     def respond(self):
         pass
