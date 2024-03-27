@@ -2,6 +2,7 @@ import Class
 from tkinter import *
 from tkinter import ttk
 import Window_update
+import time
 
 def complain_window(window):
     Window_update.clear_window(window)
@@ -26,7 +27,8 @@ def complain_window(window):
 
     date_label = Label(data_frame, text="Date:")
     date_label.grid(row=2, column=0, padx=5, pady=5)
-    date_entry = Entry(data_frame)
+    date = time.strftime("%d-%B-%Y")
+    date_entry = Label(data_frame, text=date)
     date_entry.grid(row=2, column=1, padx=5, pady=5)
 
     email_label = Label(data_frame, text="Email:")
@@ -39,19 +41,24 @@ def complain_window(window):
     content_text = Text(data_frame, width = 50, height = 10)
     content_text.grid(row=5, column=0, padx=5, columnspan=2)
 
+    notif = StringVar()
+    notif_label = Label(complain_frame, textvariable=notif)
+    notif_label.pack()
+
     # Submit Ticket function to the hash and delete all to make new complain
     def create_ticket(staff_id, name, date, email, content):
-        ticket1 = Class.Ticket(staff_id, name, date, email, "Open", content)
+        ticket1 = Class.Open_Ticket(staff_id, name, date, email, "Open", content)
         ticket1.submit()
         staff_id_entry.delete(0, END)
         name_entry.delete(0, END)
-        date_entry.delete(0, END)
         email_entry.delete(0, END)
         content_text.delete("1.0", "end-1c")
+        notif.set(f"Your ticket number is {ticket1.ticket_id}")
+        
 
     submit_button = Button(complain_frame, text="Submit", command=lambda: create_ticket(staff_id_entry.get(),
                                                                                         name_entry.get(),
-                                                                                        date_entry.get(),
+                                                                                        date,
                                                                                         email_entry.get(),
                                                                                         content_text.get("1.0", 'end-1c')))
     submit_button.pack()

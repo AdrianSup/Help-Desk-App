@@ -30,9 +30,9 @@ def review_window(window):
         name_entry.grid(row=0, column=3, padx=5, pady=5)
 
         content_label = Label(data_frame, text="Description:")
-        content_label.grid(row=4, column=0, padx=5, pady=5)
+        content_label.grid(row=1, column=0, padx=5, pady=5)
         content_text = Text(data_frame, width=50,height=10)
-        content_text.grid(row=5, column=0, padx=5, columnspan=4)
+        content_text.grid(row=2, column=0, padx=5, columnspan=4)
 
         ticket_id_entry2.insert(END, key)
         name_entry.insert(END, record[1])
@@ -43,13 +43,26 @@ def review_window(window):
 
         # Respond button
         def respond_ui():
-            Class.respond_to_ticket(key, "any")
-            #ticket_detail_window.config(width=)
-        
+            def respond_submit():
+                Class.respond_to_ticket(key, respond_text.get("1.0", 'end-1c'))
+                ticket_detail_window.destroy()
+                ttk_list = Class.OpenTicketHash.list_all()
+                Window_update.refresh_ticket(ttk_list, ticket_tree)
+            respond_button.config(text="Submit", command=respond_submit)
+            ticket_detail_window.config(height= 50)
+            respond_label = Label(data_frame, text="Respond:")
+            respond_label.grid(row=3, column=0, padx=5, pady=5)
+            respond_text = Text(data_frame, width = 50, height = 10)
+            respond_text.grid(row=4, column=0, padx=5, columnspan=4)
         
         respond_button = Button(ticket_detail_window,text= "Respond", command=respond_ui)
         respond_button.pack()
-    
+
+    def resolve():
+        notification.set(Class.resolve_ticket(ticket_id_entry.get()))
+        ttk_list = Class.OpenTicketHash.list_all()
+        Window_update.refresh_ticket(ttk_list, ticket_tree)      
+        
     # Review UI
     info_frame = LabelFrame(window, text="Ticket Info")
     info_frame.pack(padx=10, pady=10, fill=X, expand=True)
@@ -87,6 +100,13 @@ def review_window(window):
     open_button = Button(info_frame, text="Open", command=open)
     open_button.grid(row=0, column=4, padx=10, pady=10)
 
+    resolve_button = Button(info_frame, text="Close Ticket",command=resolve)
+    resolve_button.grid(row=1, column=4, padx=10, pady=10)
+
+    notification = StringVar()
+    notif_label = Label(info_frame, textvariable=notification)
+    notif_label.grid(row=2, column=4, padx=10, pady=10)
+
     # Treeview
     cols = ["Ticket ID", "Staff ID", "Name", "Date", "Email", "Status"]
     style = ttk.Style()
@@ -102,12 +122,12 @@ def review_window(window):
     ticket_tree.pack()
     table_scroll.config(command=ticket_tree.yview)
 
-    ticket_tree.column(cols[0], anchor=W, width=140)
-    ticket_tree.column(cols[1], anchor=W, width=140)
-    ticket_tree.column(cols[2], anchor=W, width=140)
+    ticket_tree.column(cols[0], anchor=W, width=80)
+    ticket_tree.column(cols[1], anchor=W, width=80)
+    ticket_tree.column(cols[2], anchor=W, width=100)
     ticket_tree.column(cols[3], anchor=W, width=100)
-    ticket_tree.column(cols[4], anchor=W, width=100)
-    ticket_tree.column(cols[5], anchor=W, width=100)
+    ticket_tree.column(cols[4], anchor=W, width=200)
+    ticket_tree.column(cols[5], anchor=W, width=70)
 
     for i in cols:
         ticket_tree.heading(i, text=i)

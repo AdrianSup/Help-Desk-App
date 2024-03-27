@@ -1,8 +1,7 @@
 class Hash_Ticket:
     def __init__(self, size):
         self.size = size                    ## total of list in the hash map
-        self.keys = []                      ## store all keys inputted
-        self.ticket_list = []               ## store all key,value in to 2D list for treeview
+        self.keys = []                      ## store all keys inputted              
         self.table = self.create_buckets()  ## hash map table
     
     def create_buckets(self):
@@ -10,7 +9,8 @@ class Hash_Ticket:
     
     def set_val(self, key, value):              ## to input a value to one of the [] in the table
         hashed_key = hash(key) % self.size      ## determine a place of a key in the table from the reminder of hash(key) / size
-        self.keys.append(key)                   ## store the key into keys list
+        if key not in self.keys:
+            self.keys.append(key)               ## store the key into keys list if it's a new key
         bucket = self.table[hashed_key]         ## direct the focus into determined []
 
         found_key = False
@@ -43,6 +43,7 @@ class Hash_Ticket:
             return "Not Found"
         
     def delete_val(self, key):                  ## to delete a pair of key,value by key
+        self.keys.remove(key)
         hashed_key = hash(key) % self.size
         bucket = self.table[hashed_key]
 
@@ -56,6 +57,7 @@ class Hash_Ticket:
             bucket.pop(index)
 
     def list_all(self):                             ## to change the table into a 2D list
+        self.ticket_list = []                       ## store all key,value in to 2D list for treeview
         for keys in self.keys:
             hashed_keys = hash(keys) % self.size
             bucket = self.table[hashed_keys]
@@ -70,8 +72,7 @@ class Hash_Ticket:
                         else:
                             container.append(i)         ## combine the key with the value into a single list
                     self.ticket_list.append(container)
-                else:
-                    print(record)
+        print(self.ticket_list)
         return self.ticket_list                     ## return a 2D list (example: [['2001', 'value', 'value'], ['2002', 'value', 'value'], ...])
 
     def __str__(self):                                      ## to show the table when print()

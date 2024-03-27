@@ -1,7 +1,6 @@
 import tkinter
 from tkinter import *
-from Review_UI import review_window
-from Complain_UI import complain_window
+import Review_UI, Complain_UI
 
 def window_construct():
     # window construct
@@ -11,8 +10,8 @@ def window_construct():
 
     menubar = Menu(window)
     window.config(bg="white", menu=menubar)
-    menubar.add_command(label="Complain", command=lambda: complain_window(window))
-    menubar.add_command(label="Review TIcket", command=lambda: review_window(window))
+    menubar.add_command(label="Complain", command=lambda: Complain_UI.complain_window(window))
+    menubar.add_command(label="Review TIcket", command=lambda: Review_UI.review_window(window))
     window.mainloop()
 
 if __name__ == "__main__":
