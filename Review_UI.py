@@ -2,6 +2,7 @@ import Class
 from tkinter import *
 from tkinter import ttk
 import Window_update
+import Complain_UI
 
 
 def review_window(window):
@@ -46,7 +47,7 @@ def review_window(window):
             def respond_submit():
                 Class.respond_to_ticket(key, respond_text.get("1.0", 'end-1c'))
                 ticket_detail_window.destroy()
-                ttk_list = Class.OpenTicketHash.list_all()
+                ttk_list = Class.OpenTicketHash.list_all()+Class.ClosedTicketHash.list_all()
                 Window_update.refresh_ticket(ttk_list, ticket_tree)
             respond_button.config(text="Submit", command=respond_submit)
             ticket_detail_window.config(height= 50)
@@ -60,8 +61,14 @@ def review_window(window):
 
     def resolve():
         notification.set(Class.resolve_ticket(ticket_id_entry.get()))
-        ttk_list = Class.OpenTicketHash.list_all()
-        Window_update.refresh_ticket(ttk_list, ticket_tree)      
+        ttk_list = Class.OpenTicketHash.list_all()+Class.ClosedTicketHash.list_all()
+        Window_update.refresh_ticket(ttk_list, ticket_tree) 
+
+    def reopen():
+        notification.set(Class.reopen_ticket(ticket_id_entry.get()))
+        ttk_list = Class.OpenTicketHash.list_all()+Class.ClosedTicketHash.list_all()
+        Window_update.refresh_ticket(ttk_list, ticket_tree)
+        Complain_UI.complain_window(window, ticket_id_entry.get(), Class.OpenTicketHash.get_val(ticket_id_entry.get()))
         
     # Review UI
     info_frame = LabelFrame(window, text="Ticket Info")
@@ -103,6 +110,9 @@ def review_window(window):
     resolve_button = Button(info_frame, text="Close Ticket",command=resolve)
     resolve_button.grid(row=1, column=4, padx=10, pady=10)
 
+    reopen_button = Button(info_frame, text="Re-Open Ticket", command=reopen)
+    reopen_button.grid(row=0, column=5, padx=10, pady=10)
+
     notification = StringVar()
     notif_label = Label(info_frame, textvariable=notification)
     notif_label.grid(row=2, column=4, padx=10, pady=10)
@@ -132,7 +142,7 @@ def review_window(window):
     for i in cols:
         ticket_tree.heading(i, text=i)
 
-    ttk_list = Class.OpenTicketHash.list_all()
+    ttk_list = Class.OpenTicketHash.list_all()+Class.ClosedTicketHash.list_all()
     Window_update.refresh_ticket(ttk_list, ticket_tree)
 
     # Feature
