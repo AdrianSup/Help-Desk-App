@@ -108,7 +108,8 @@ def review_window(window):
 
     status_label = Label(info_frame, text="Status:")
     status_label.grid(row=2, column=2, padx=5, pady=5)
-    status_entry = Entry(info_frame)
+    status_entry = ttk.Combobox(info_frame, state="readonly", values=["All", "Open", "Re-Open", "Responded", "Closed"])
+    status_entry.set('All')
     status_entry.grid(row=2, column=3, padx=5, pady=5)
 
     open_button = Button(info_frame, text="Open", command=open)
@@ -176,33 +177,38 @@ def review_window(window):
             pass
         
     def search(e):
-        ticket_id_record = ticket_id_entry.get().lower()
-        staff_id_record = staff_id_entry.get().lower()
-        name_record = name_entry.get().lower()
-        date_record = date_entry.get().lower()
-        email_record = email_entry.get().lower()
-        status_record = status_entry.get().lower()
+        list_record = {"ticket id":ticket_id_entry.get().lower(), 
+                       "staff id":staff_id_entry.get().lower(), 
+                       "name":name_entry.get().lower(), 
+                       "date":date_entry.get().lower(), 
+                       "email":email_entry.get().lower(), 
+                       "status":status_entry.get().lower()} 
 
-        list_record = (ticket_id_record, staff_id_record, name_record, date_record, email_record, status_record)
+        ticket_list = Class.OpenTicketHash.ticket_list + Class.ClosedTicketHash.ticket_list
 
         ticket_tree.delete(*ticket_tree.get_children())
-        if list_record[0] == "" and list_record[1] == "" and list_record[2] == "" and list_record[3] == "" \
-                and list_record[4] == "":
-            Window_update.refresh_ticket(Class.ticket_list, ticket_tree)  
-        else:
-            for ticket in Class.ticket_list:
-                if list_record[0] in str(ticket[0]).lower():
-                    ticket_tree.insert('', index='end', values=ticket, tags=('evenrow',))
-                elif list_record[1] in str(ticket[1]).lower():
-                    ticket_tree.insert('', index='end', values=ticket, tags=('evenrow',))
-                elif list_record[2] in str(ticket[2]).lower():
-                    ticket_tree.insert('', index='end', values=ticket, tags=('evenrow',))
-                elif list_record[3] in str(ticket[3]).lower():
-                    ticket_tree.insert('', index='end', values=ticket, tags=('evenrow',))
-                elif list_record[4] in str(ticket[4]).lower():
-                    ticket_tree.insert('', index='end', values=ticket, tags=('evenrow',))
-                elif list_record[5] in str(ticket[5]).lower():
-                    ticket_tree.insert('', index='end', values=ticket, tags=('evenrow',))
+        print("deleted")
+        
+        if list_record.values == "" or list_record.values == None:
+            print("all blank")
+            Window_update.refresh_ticket(ticket_list, ticket_tree)
+            return
+        
+        for ticket in ticket_list:
+            matched_value = 0
+            iteration_time = 0
+            for key, value in list_record.items():
+                iteration_time += 1
+                if value == "" or value == None:
+                    matched_value += 1
+                else:
+                    if value == str(ticket[iteration_time - 1]).lower():
+                        matched_value += 1
+                    elif value == "all":
+                        matched_value += 1
+            if matched_value >= 6:
+                ticket_tree.insert('', index='end', values=ticket, tags=('evenrow',))
+
     
     # Bind
     ticket_id_entry.bind("<KeyRelease>", search)            ## to refresh the treeview every single charcater inputted
@@ -210,5 +216,5 @@ def review_window(window):
     name_entry.bind("<KeyRelease>", search)
     date_entry.bind("<KeyRelease>", search)
     email_entry.bind("<KeyRelease>", search)
-    status_entry.bind("<KeyRelease>", search)
-    ticket_tree.bind("<ButtonRelease-1>", select_record)    ## to select record
+    status_entry.bind("<<ComboboxSelected>>", search)
+    ticket_tree.bind("<ButtonRelease-1>", select_record)    ## to select record"
