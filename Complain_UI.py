@@ -4,7 +4,7 @@ from tkinter import ttk
 import Window_update
 import time
 
-def complain_window(window):
+def complain_window(window, *args):
     Window_update.clear_window(window)
 
     # Complain window UI
@@ -62,3 +62,36 @@ def complain_window(window):
                                                                                         email_entry.get(),
                                                                                         content_text.get("1.0", 'end-1c')))
     submit_button.pack()
+
+    # Check if its Reopen request
+    def resubmit(staff_id, name, date, email, content):
+        ticket2 = Class.Closed_Ticket(*args)
+        ticket2.reopen()
+        staff_id_entry.delete(0, END)
+        name_entry.delete(0, END)
+        email_entry.delete(0, END)
+        content_text.delete("1.0", "end-1c")
+        notif.set(f"Your ticket {ticket2.ticket_id} is Re-Opened")
+    if args:
+        key, value = args
+        
+        staff_id_str = StringVar()
+        name_str = StringVar()
+        date_str = StringVar()
+        email_str = StringVar()
+        
+        staff_id_str.set(value[0])
+        name_str.set(value[1])
+        date_str.set(value[2])
+        email_str.set(value[3])
+        
+        staff_id_entry.config(textvariable=staff_id_str, state=DISABLED)
+        name_entry.config(textvariable=name_str, state=DISABLED)
+        date_entry.config(textvariable=date_str, state=DISABLED)
+        email_entry.config(textvariable=email_str, state=DISABLED)
+        content_text.insert("1.0", value[5])
+        submit_button.config(text="Re-Submit", command=lambda: resubmit(staff_id_entry.get(),
+                                                                        name_entry.get(),
+                                                                        date,
+                                                                        email_entry.get(),
+                                                                        content_text.get("1.0", 'end-1c')))
