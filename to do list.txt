@@ -1,8 +1,9 @@
 login system to separate complain and review
 make closed ticket class and reopen    DONE
-make statistic menu
+make statistic menu donee
 review ticket resolve  DONEE
 class password      Donee
 search engine donee
 OPTIONAL:
 make all the list together closed and open, then give sort function       donee
+
