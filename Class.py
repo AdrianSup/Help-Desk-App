@@ -61,12 +61,25 @@ class Closed_Ticket(Ticket):
         self.respond_text = respond
     
     def reopen(self):
-        self.status = "Re-Open"
         ClosedTicketHash.delete_val(self.ticket_id)
         OpenTicketHash.set_val(self.ticket_id, (self.staff_id, self.name, self.date, self.email, self.status, self.content, self.respond_text))
 
+class Password_Ticket(Open_Ticket):
+    def __init__(self, staff_id, name, date, email, status, content):
+        super().__init__(staff_id, name, date, email, status, content)
+
+    def submit(self, *ticket_id):
+        super().submit(*ticket_id)
+        respond = str(self.staff_id[:2])+str(self.name[:3])
+        super().respond(respond, self.ticket_id)
+        super().resolve(self.ticket_id, self.respond_text)
+
+        
 def respond_to_ticket(key, respond_text):
-    value = OpenTicketHash.get_val(key) 
+    value = OpenTicketHash.get_val(key)
+    if len(value) > 6:
+        value = list(value)
+        value.pop(-1)
     ticket = Open_Ticket(*value) 
     key = "".join(key)
     ticket.respond(respond_text, key)
@@ -84,8 +97,3 @@ def resolve_ticket(key):
         return "Not responded yet"
     
     
-def reopen_ticket(key):
-    value = ClosedTicketHash.get_val(key)
-    ticket = Closed_Ticket(key, *value)
-    ticket.reopen()
-    return "Ticket Re-Opened"

@@ -47,13 +47,27 @@ def complain_window(window, *args):
 
     # Submit Ticket function to the hash and delete all to make new complain
     def create_ticket(staff_id, name, date, email, content):
-        ticket1 = Class.Open_Ticket(staff_id, name, date, email, "Open", content)
+        value_dict = {"Staff ID":staff_id, "Name":name, "Date":date, "Email":email, "Content":content}
+        for key, value in value_dict.items():
+            if value == "":
+                notif.set(f"Please fill in {key}")
+                return
+        
+        if "password" in content.lower() and "change" in content.lower():
+            ticket1 = Class.Password_Ticket(staff_id, name, date, email, "Open", content)
+            password = True
+        else:
+            ticket1 = Class.Open_Ticket(staff_id, name, date, email, "Open", content)
+            password = False
         ticket1.submit()
         staff_id_entry.delete(0, END)
         name_entry.delete(0, END)
         email_entry.delete(0, END)
         content_text.delete("1.0", "end-1c")
-        notif.set(f"Your ticket number is {ticket1.ticket_id}")
+        if password:
+            notif.set(f"Your ticket number is {ticket1.ticket_id}, Your new Password is {ticket1.respond_text}")
+        else:
+            notif.set(f"Your ticket number is {ticket1.ticket_id}")
         
 
     submit_button = Button(complain_frame, text="Submit", command=lambda: create_ticket(staff_id_entry.get(),
@@ -64,8 +78,8 @@ def complain_window(window, *args):
     submit_button.pack()
 
     # Check if its Reopen request
-    def resubmit(staff_id, name, date, email, content):
-        ticket2 = Class.Closed_Ticket(*args)
+    def resubmit(ticket_id ,staff_id, name, date, email, content):
+        ticket2 = Class.Closed_Ticket(ticket_id=ticket_id, staff_id=staff_id, name=name, date=date, email=email, status="Re-Open", content=content, respond=value[-1])
         ticket2.reopen()
         staff_id_entry.delete(0, END)
         name_entry.delete(0, END)
@@ -90,7 +104,8 @@ def complain_window(window, *args):
         date_entry.config(textvariable=date_str, state=DISABLED)
         email_entry.config(textvariable=email_str, state=DISABLED)
         content_text.insert("1.0", value[5])
-        submit_button.config(text="Re-Submit", command=lambda: resubmit(staff_id_entry.get(),
+        submit_button.config(text="Re-Submit", command=lambda: resubmit(key,
+                                                                        staff_id_entry.get(),
                                                                         name_entry.get(),
                                                                         date,
                                                                         email_entry.get(),

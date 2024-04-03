@@ -12,6 +12,10 @@ def review_window(window):
         # get value from hash map for selected in treeview
         key = ticket_id_entry.get()
         record = Class.OpenTicketHash.get_val(key)
+        if len(record) > 6:
+            respond_check = True
+        else:
+            respond_check = False
 
         # Top level UI
         ticket_detail_window = Toplevel()
@@ -55,9 +59,15 @@ def review_window(window):
             respond_label.grid(row=3, column=0, padx=5, pady=5)
             respond_text = Text(data_frame, width = 50, height = 10)
             respond_text.grid(row=4, column=0, padx=5, columnspan=4)
+
+            if respond_check:
+                respond_text.insert("end-1c", record[6])
         
         respond_button = Button(ticket_detail_window,text= "Respond", command=respond_ui)
         respond_button.pack()
+
+        if respond_check:
+            respond_ui()
 
     def resolve():
         notification.set(Class.resolve_ticket(ticket_id_entry.get()))
@@ -65,9 +75,6 @@ def review_window(window):
         Window_update.refresh_ticket(ttk_list, ticket_tree) 
 
     def reopen():
-        notification.set(Class.reopen_ticket(ticket_id_entry.get()))
-        ttk_list = Class.OpenTicketHash.list_all()+Class.ClosedTicketHash.list_all()
-        Window_update.refresh_ticket(ttk_list, ticket_tree)
         Complain_UI.complain_window(window, ticket_id_entry.get(), Class.OpenTicketHash.get_val(ticket_id_entry.get()))
         
     # Review UI
