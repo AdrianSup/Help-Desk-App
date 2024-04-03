@@ -17,8 +17,7 @@ class Ticket:
         self.status = status
         
     # Ticket methods
-    def reopen(self):
-        pass
+    
 
     def pass_change(self):
         pass
@@ -55,30 +54,38 @@ class Open_Ticket(Ticket):
         ClosedTicketHash.set_val(self.ticket_id,(self.staff_id, self.name, self.date, self.email, self.status, self.content, self.respond_text))
         print(ClosedTicketHash)
 
-
+class Closed_Ticket(Ticket):
+    def __init__(self,ticket_id, staff_id, name, date, email, status, content, respond):
+        super().__init__(staff_id, name, date, email, status, content)
+        self.ticket_id = ticket_id
+        self.respond_text = respond
+    
+    def reopen(self):
+        self.status = "Re-Open"
+        ClosedTicketHash.delete_val(self.ticket_id)
+        OpenTicketHash.set_val(self.ticket_id, (self.staff_id, self.name, self.date, self.email, self.status, self.content, self.respond_text))
 
 def respond_to_ticket(key, respond_text):
-    value = OpenTicketHash.get_val(key)
-    value_string = " ".join(j for j in value[0:6])
-    staff_id, name, date, email, status, content = value_string.split()
+    value = OpenTicketHash.get_val(key) 
+    ticket = Open_Ticket(*value) 
     key = "".join(key)
-    object_name_list = [value]
-    for i in object_name_list[0]:
-        i = Open_Ticket(staff_id, name, date, email, status, content)
-    i.respond(respond_text, key)
+    ticket.respond(respond_text, key)
 
 def resolve_ticket(key):
     value = OpenTicketHash.get_val(key)
-    value_string = " ".join(j for j in value[0:])
-    staff_id, name, date, email, status, content, *respond = value_string.split()
+    ticket = Open_Ticket(*value[0:6])
     key = "".join(key)
-    object_name_list = [value]
-    for i in object_name_list[0]:
-        i = Open_Ticket(staff_id, name, date, email, status, content)
-    if respond != []:
+    if len(value) > 6:
         print("-------------------")
-        print(respond)
-        i.resolve(key,respond[0])
+        print(value[6])
+        ticket.resolve(key,value[6])
         return "Ticket closed"
     else:
         return "Not responded yet"
+    
+    
+def reopen_ticket(key):
+    value = ClosedTicketHash.get_val(key)
+    ticket = Closed_Ticket(key, *value)
+    ticket.reopen()
+    return "Ticket Re-Opened"
