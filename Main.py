@@ -8,6 +8,7 @@ def window_construct():
     window.title("Help Desk System")
     window.geometry("700x500")
 
+    # Add menu to the window
     menubar = Menu(window)
     window.config(bg="white", menu=menubar)
     menubar.add_command(label="Complain", command=lambda: Complain_UI.complain_window(window))

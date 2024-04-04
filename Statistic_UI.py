@@ -2,6 +2,7 @@ import Window_update
 import Class
 from tkinter import *
 
+# To display total ticket submitted, open ticket, and closed ticket
 def statistic_window(window):
     statistic_window = Toplevel()
     statistic_window.geometry("300x200")

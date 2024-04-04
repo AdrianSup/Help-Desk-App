@@ -38,9 +38,9 @@ class Hash_Ticket:
                 break
         
         if found_key:
-            return record_val
+            return record_val                   ## returning the value
         else:
-            return "Not Found"
+            return "Not Found"                  ## return "Not Found"
         
     def delete_val(self, key):                  ## to delete a pair of key,value by key
         self.keys.remove(key)
@@ -54,7 +54,7 @@ class Hash_Ticket:
                 break
 
         if found_key:
-            bucket.pop(index)
+            bucket.pop(index)                     
 
     def list_all(self):                             ## to change the table into a 2D list
         self.ticket_list = []                       ## store all key,value in to 2D list for treeview
