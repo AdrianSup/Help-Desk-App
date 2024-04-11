@@ -1,6 +1,6 @@
-This is my project for a Help Desk ticketing system.
-This system includes python codes for submitting tickets, reviewing tickets, as well as responding, close, and re-open available tickets
-This system also have an UI using tkinter module for the whole program
+This is my project for a Help Desk ticketing system. /n
+This system includes python codes for submitting tickets, reviewing tickets, as well as responding, close, and re-open available tickets. /n
+This system also have an UI using tkinter module for the whole program. /n
 
 To navigate through the code:
 1. Main.py --> is where to run the whole code
