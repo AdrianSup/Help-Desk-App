@@ -57,10 +57,11 @@ def review_window(window):
             #  Submit the new responds to the hash by calling function in class
             #  destroy the Toplevel and refresh the treeview
             def respond_submit():
-                Class.respond_to_ticket(key, respond_text.get("1.0", 'end-1c'))
-                ticket_detail_window.destroy()
-                ttk_list = Class.OpenTicketHash.list_all()+Class.ClosedTicketHash.list_all()
-                Window_update.refresh_ticket(ttk_list, ticket_tree)
+                if respond_text.get("1.0", 'end-1c'):
+                    Class.respond_to_ticket(key, respond_text.get("1.0", 'end-1c'))
+                    ticket_detail_window.destroy()
+                    ttk_list = Class.OpenTicketHash.list_all()+Class.ClosedTicketHash.list_all()
+                    Window_update.refresh_ticket(ttk_list, ticket_tree)
             
             # Respond UI that pop up after button press
             respond_button.config(text="Submit", command=respond_submit)
